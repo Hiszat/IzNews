@@ -1,22 +1,54 @@
-import { useState } from 'react'
-import {Container, Nav, Navbar, Form, Button } from 'react-bootstrap';
+import { useState, useEffect } from 'react'
+import axios from 'axios';
+import {Container, Nav, Navbar, Form, Button, Card} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [searchTerm, setSearchTerm] = useState('');
+  const [articles, setArticles] = useState([]);
+
+  const fetchNews = (url) => {
+    axios
+      .get(url)
+      .then((response) => {
+        setArticles(response.data.articles);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const initialUrl =
+      'https://newsapi.org/v2/top-headlines?country=us' +
+      '&pageSize=9' +
+      '&sortBy=popularity' +
+      '&apiKey=72e148dd9cfb4074b7682ea66ef415d4';
+
+  useEffect(() => {
+    fetchNews(initialUrl);
+  }, []);
+
+  const performSearch = () => {
+    const url = `https://newsapi.org/v2/everything?q=${searchTerm}&pageSize=9&apiKey=72e148dd9cfb4074b7682ea66ef415d4`;
+    fetchNews(url);
+  };
+
+  const navBarSearch = (params) => {
+    const url = `https://newsapi.org/v2/everything?q=${params}&pageSize=9&apiKey=72e148dd9cfb4074b7682ea66ef415d4`;
+    fetchNews(url);
+  };
 
   return (
     <>
-
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
         <Navbar.Brand href="#home">Iz News</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Anime</Nav.Link>
-            <Nav.Link href="#link">Sports</Nav.Link>
+            <Nav.Link href="#home" onClick={() => fetchNews(initialUrl)}>Home</Nav.Link>
+            <Nav.Link href="#link" onClick={() => navBarSearch('anime')}>Anime</Nav.Link>
+            <Nav.Link href="#link" onClick={() => navBarSearch('sports')}>Sports</Nav.Link>
           </Nav>
           <Form className="d-flex">
             <Form.Control
@@ -24,36 +56,30 @@ function App() {
               placeholder="Search"
               className="me-1"
               aria-label="Search"
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Button variant="outline-success">Search</Button>
+            <Button variant="outline-success" onClick={performSearch}>Search</Button>
           </Form>
         </Navbar.Collapse>
       </Container>
     </Navbar>
     <Container>
       <h1 className="mt-3">Welcome to headline</h1>
-      <div id="news" className="row mx-auto p-3 ms-5">
-
+      <div className="row mx-auto p-3 ms-5">
+        {articles.map((item, index) => (
+          <Card key={index} className="my-4 mx-2" style={{ width: '18rem' }}>
+            <Card.Img variant="top" src={item.urlToImage} />
+            <Card.Body>
+              <Card.Title>{item.title}</Card.Title>
+              <Card.Text>{item.description}</Card.Text>
+              <Button variant="primary" href={item.url} target="_blank">
+                Details
+              </Button>
+            </Card.Body>
+          </Card>
+        ))}
       </div>
     </Container>
-    {/*
-
-    <div className="modal fade" id="notfound" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">Data not found</h1>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div id="modal-id" className="modal-body">
-              
-            </div>
-            <div className="modal-footer">
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-    </div> */}
     </>
   )
 }
