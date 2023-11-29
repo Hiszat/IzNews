@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navs from './components/Navs';
+import NewsContainer from "./components/NewsContainer";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,7 +49,7 @@ function App() {
         setSearchTerm={setSearchTerm}
         performSearch={performSearch}
       />
-    
+    <NewsContainer articles={articles} />
     </>
   )
 }
