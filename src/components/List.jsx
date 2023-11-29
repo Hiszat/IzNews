@@ -1,6 +1,7 @@
+import React from "react";
 import {Button, Card} from 'react-bootstrap';
 
-const List = (articles) => {
+function List({ articles }){
     return ( 
         <div className="row mx-auto p-3 ms-5">
         {articles.map((item, index) => (
