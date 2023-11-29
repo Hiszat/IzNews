@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios';
 import {Container, Nav, Navbar, Form, Button, Card} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import List from './components/List';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -64,21 +65,8 @@ function App() {
       </Container>
     </Navbar>
     <Container>
-      <h1 className="mt-3">Welcome to headline</h1>
-      <div className="row mx-auto p-3 ms-5">
-        {articles.map((item, index) => (
-          <Card key={index} className="my-4 mx-2" style={{ width: '18rem' }}>
-            <Card.Img variant="top" src={item.urlToImage} />
-            <Card.Body>
-              <Card.Title>{item.title}</Card.Title>
-              <Card.Text>{item.description}</Card.Text>
-              <Button variant="primary" href={item.url} target="_blank">
-                Details
-              </Button>
-            </Card.Body>
-          </Card>
-        ))}
-      </div>
+        <h1 className="mt-3">Welcome to headline</h1>
+        <List articles={articles} />
     </Container>
     </>
   )
